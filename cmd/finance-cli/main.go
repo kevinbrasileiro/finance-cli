@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/kevinbrasileiro/finance-cli/internal/models"
@@ -23,8 +24,11 @@ func main() {
 		panic(err)
 	}
 
-	wow := storage.ListTransactions()
-	if wow != nil {
-		panic(wow)
+	transactions, err := storage.ReadTransactions()
+	if err != nil {
+		panic(err)
+	}
+	for _, transaction := range transactions {
+		fmt.Printf("%+v\n", transaction)
 	}
 }
