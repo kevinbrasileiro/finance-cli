@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Transaction struct {
-	ID   string
+	ID   int64
 	Date time.Time
 
 	Amount int64

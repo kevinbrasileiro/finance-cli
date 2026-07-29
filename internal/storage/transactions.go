@@ -38,7 +38,7 @@ func transactionsFilePath() (string, error) {
 
 func transactionToRecord(t models.Transaction) []string {
 	return []string{
-		t.ID,
+		strconv.FormatInt(t.ID, 10),
 		t.Date.Format(dateLayout),
 		strconv.FormatInt(t.Amount, 10),
 		t.Title,
@@ -55,6 +55,11 @@ func recordToTransaction(record []string) (models.Transaction, error) {
 		)
 	}
 
+	id, err := strconv.ParseInt(record[0], 10, 64)
+	if err != nil {
+		return models.Transaction{}, fmt.Errorf("parsing id %q: %w", record[0], err)
+	}
+
 	date, err := time.Parse(dateLayout, record[1])
 	if err != nil {
 		return models.Transaction{}, fmt.Errorf("parsing date %q: %w", record[1], err)
@@ -66,7 +71,7 @@ func recordToTransaction(record []string) (models.Transaction, error) {
 	}
 
 	return models.Transaction{
-		ID:          record[0],
+		ID:          id,
 		Date:        date,
 		Amount:      amount,
 		Title:       record[3],
@@ -99,7 +104,7 @@ func AddTransaction(transaction models.Transaction) error {
 	return writer.Error()
 }
 
-func ReadTransactions() ([]models.Transaction, error) {
+func GetAllTransactions() ([]models.Transaction, error) {
 	path, err := transactionsFilePath()
 	if err != nil {
 		return []models.Transaction{}, err

@@ -10,7 +10,7 @@ import (
 
 func main() {
 	tx := models.Transaction{
-		ID:          "1",
+		ID:          1,
 		Date:        time.Now(),
 		Amount:      1250,
 		Title:       "Pizza",
@@ -24,7 +24,7 @@ func main() {
 		panic(err)
 	}
 
-	transactions, err := storage.ReadTransactions()
+	transactions, err := storage.GetAllTransactions()
 	if err != nil {
 		panic(err)
 	}
