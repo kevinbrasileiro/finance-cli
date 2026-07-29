@@ -12,21 +12,7 @@ import (
 	"github.com/kevinbrasileiro/finance-cli/internal/models"
 )
 
-const dateLayout = "2006-01-02"
 const transactionFields = 7
-
-func dataDir() (string, error) {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", fmt.Errorf("locating home directory: %w", err)
-	}
-
-	dir := filepath.Join(home, ".fin")
-	if err := os.MkdirAll(dir, 0o755); err != nil {
-		return "", fmt.Errorf("creating data directory %q: %w", dir, err)
-	}
-	return dir, nil
-}
 
 func transactionsFilePath() (string, error) {
 	dir, err := dataDir()
@@ -81,15 +67,21 @@ func recordToTransaction(record []string) (models.Transaction, error) {
 	}, nil
 }
 
-func AddTransaction(transaction models.Transaction) error {
+func AddTransaction(transaction models.Transaction) (models.Transaction, error) {
+	id, err := nextID("transactions")
+	if err != nil {
+		return models.Transaction{}, err
+	}
+	transaction.ID = id
+
 	path, err := transactionsFilePath()
 	if err != nil {
-		return err
+		return models.Transaction{}, err
 	}
 
 	file, err := os.OpenFile(path, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o644)
 	if err != nil {
-		return err
+		return models.Transaction{}, err
 	}
 	defer file.Close()
 
@@ -97,11 +89,15 @@ func AddTransaction(transaction models.Transaction) error {
 	writer.Comma = '\t'
 
 	if err := writer.Write(transactionToRecord(transaction)); err != nil {
-		return fmt.Errorf("writing transaction: %w", err)
+		return models.Transaction{}, fmt.Errorf("writing transaction: %w", err)
 	}
 
 	writer.Flush()
-	return writer.Error()
+	if err := writer.Error(); err != nil {
+		return models.Transaction{}, err
+	}
+
+	return transaction, nil
 }
 
 func GetAllTransactions() ([]models.Transaction, error) {

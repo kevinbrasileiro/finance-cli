@@ -10,7 +10,6 @@ import (
 
 func main() {
 	tx := models.Transaction{
-		ID:          1,
 		Date:        time.Now(),
 		Amount:      1250,
 		Title:       "Pizza",
@@ -19,10 +18,11 @@ func main() {
 		Description: "test",
 	}
 
-	err := storage.AddTransaction(tx)
+	saved, err := storage.AddTransaction(tx)
 	if err != nil {
 		panic(err)
 	}
+	fmt.Printf("added transaction #%d\n", saved.ID)
 
 	transactions, err := storage.GetAllTransactions()
 	if err != nil {

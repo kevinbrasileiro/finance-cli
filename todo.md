@@ -12,7 +12,8 @@ optional flags:
 --description <text>
 --date <yyyy-mm-dd>
 
-fin list [...filters]
+fin list
+fin summary [...filters]
 
 fin account create <name> <currency>
 fin account delete <name>
