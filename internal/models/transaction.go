@@ -10,6 +10,6 @@ type Transaction struct {
 	Title  string
 
 	CategoryID  string
-	AccountId   string
+	AccountID   string
 	Description string
 }

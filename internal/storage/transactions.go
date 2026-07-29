@@ -29,7 +29,7 @@ func transactionToRecord(t models.Transaction) []string {
 		strconv.FormatInt(t.Amount, 10),
 		t.Title,
 		t.CategoryID,
-		t.AccountId,
+		t.AccountID,
 		t.Description,
 	}
 }
@@ -62,7 +62,7 @@ func recordToTransaction(record []string) (models.Transaction, error) {
 		Amount:      amount,
 		Title:       record[3],
 		CategoryID:  record[4],
-		AccountId:   record[5],
+		AccountID:   record[5],
 		Description: record[6],
 	}, nil
 }
